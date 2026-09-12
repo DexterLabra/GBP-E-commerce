@@ -34,6 +34,9 @@ Then open `http://localhost:3000`.
 Admin demo:
 `http://localhost:3000/admin`
 
+Admin access:
+`/admin` and `/admin/inventory` require the signed admin session. Set `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` in `.env.local` for local development and in Vercel Project Settings for deployment. The session cookie is HTTP-only and expires after eight hours.
+
 ## Supabase order backend
 
 Orders use the Next.js API and Supabase when the server environment variables are configured. The local browser cache remains as an offline development fallback.

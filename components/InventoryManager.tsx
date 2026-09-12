@@ -58,6 +58,7 @@ export default function InventoryManager() {
     setItems(loadProducts());
     setNotice({ type: "info", text: "Inventory restored to the original demo products." });
   };
+  const signOut = async () => { await fetch("/api/admin/logout", { method: "POST" }); window.location.assign("/admin/login"); };
 
   return (
     <div className="admin inventoryAdmin">
@@ -67,6 +68,7 @@ export default function InventoryManager() {
           <div className="adminLinks">
             <a href="/admin">Orders</a>
             <a className="active" href="/admin/inventory">Inventory</a>
+            <button className="signOutButton" onClick={signOut}>Sign out</button>
             <a href="/" className="btn btnGold">View Store</a>
           </div>
         </div>

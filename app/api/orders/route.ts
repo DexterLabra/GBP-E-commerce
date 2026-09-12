@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "../../../lib/supabaseServer";
 import { Order } from "../../../data/orderStore";
+import { isAdminRequest } from "../../../lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -13,10 +14,17 @@ function toOrder(row: Record<string, unknown>): Order {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const supabase = getSupabaseServer();
   if (!supabase) return NextResponse.json({ configured: false, orders: [] });
-  const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+  const email = url.searchParams.get("email");
+  if (!isAdminRequest(request) && !id && !email) return NextResponse.json({ error: "Admin authentication required." }, { status: 401 });
+  let query = supabase.from("orders").select("*").order("created_at", { ascending: false });
+  if (id) query = query.eq("id", id);
+  if (email) query = query.eq("customer->>email", email);
+  const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ configured: true, orders: (data || []).map(toOrder) });
 }

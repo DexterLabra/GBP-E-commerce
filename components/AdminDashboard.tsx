@@ -29,10 +29,11 @@ export default function AdminDashboard() {
   const statusCounts = ORDER_STATUSES.map(status => ({ status, count: orders.filter(order => order.status === status).length }));
   const maxCount = Math.max(1, ...statusCounts.map(item => item.count));
   const advanceOrder = async (order: Order) => { const nextIndex = Math.min(ORDER_STATUSES.indexOf(order.status) + 1, ORDER_STATUSES.length - 1); await updateOrder(order.id, { status: ORDER_STATUSES[nextIndex], trackingNumber: nextIndex >= 5 ? `GBP-${order.id.slice(-6)}` : order.trackingNumber }); setOrders(loadOrders()); };
+  const signOut = async () => { await fetch("/api/admin/logout", { method: "POST" }); window.location.assign("/admin/login"); };
 
   return (
     <div className="admin adminDashboard">
-      <header className="adminTop"><div className="container adminNav"><a href="/admin" className="adminBrand"><span className="logoMark">GBP</span><span>GBP ADMIN • ORDER MANAGEMENT</span></a><div className="adminLinks"><a className="active" href="/admin">Orders</a><a href="/admin/inventory">Inventory</a><a href="/shipment">Shipment portal</a><button className="themeButton" onClick={toggleTheme} aria-label="Toggle dark mode">{dark ? <Sun size={16}/> : <Moon size={16}/>}</button><a href="/" className="btn btnGold">View Store</a></div></div></header>
+      <header className="adminTop"><div className="container adminNav"><a href="/admin" className="adminBrand"><span className="logoMark">GBP</span><span>GBP ADMIN • ORDER MANAGEMENT</span></a><div className="adminLinks"><a className="active" href="/admin">Orders</a><a href="/admin/inventory">Inventory</a><a href="/shipment">Shipment portal</a><button className="themeButton" onClick={toggleTheme} aria-label="Toggle dark mode">{dark ? <Sun size={16}/> : <Moon size={16}/>}</button><button className="signOutButton" onClick={signOut}>Sign out</button><a href="/" className="btn btnGold">View Store</a></div></div></header>
       <main className="container adminMain">
         <div className="dashboardIntro"><div><div className="kicker">Operations / live workspace</div><h1 className="serif">Order command center</h1><p>Review every submitted order, confirm payment, and move shipments forward from one place.</p></div><div className="liveBadge"><span/> Live sync enabled</div></div>
         <div className="kpis">

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "../../../../lib/supabaseServer";
 import { Order } from "../../../../data/orderStore";
+import { isAdminRequest } from "../../../../lib/adminAuth";
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  if (!isAdminRequest(request)) return NextResponse.json({ error: "Admin authentication required." }, { status: 401 });
   const supabase = getSupabaseServer();
   if (!supabase) return NextResponse.json({ configured: false, message: "Supabase is not configured." }, { status: 503 });
   const changes = await request.json() as Partial<Pick<Order, "status" | "trackingNumber">>;

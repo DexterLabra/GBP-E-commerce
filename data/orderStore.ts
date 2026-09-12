@@ -61,9 +61,10 @@ export function saveOrders(orders: Order[]) {
   window.dispatchEvent(new CustomEvent(ORDERS_UPDATED_EVENT, { detail: orders }));
 }
 
-export async function hydrateOrders(): Promise<Order[]> {
+export async function hydrateOrders(criteria?: { id?: string; email?: string }): Promise<Order[]> {
   try {
-    const response = await fetch("/api/orders", { cache: "no-store" });
+    const params = new URLSearchParams(criteria?.id ? { id: criteria.id } : criteria?.email ? { email: criteria.email } : undefined);
+    const response = await fetch(`/api/orders${params.toString() ? `?${params}` : ""}`, { cache: "no-store" });
     const payload = await response.json();
     if (response.ok && payload.configured) {
       const orders = Array.isArray(payload.orders) ? payload.orders as Order[] : [];

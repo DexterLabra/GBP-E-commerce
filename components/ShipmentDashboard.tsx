@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Check, Moon, Package, Search, Sun, Truck } from "lucide-react";
-import { hydrateOrders, loadOrders, Order, ORDERS_UPDATED_EVENT, ORDER_STATUSES } from "../data/orderStore";
+import { hydrateOrders, Order, ORDER_STATUSES } from "../data/orderStore";
 
 export default function ShipmentDashboard() {
-  const [orders, setOrders] = useState<Order[]>(loadOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [query, setQuery] = useState("");
   const [dark, setDark] = useState(false);
 
@@ -13,12 +13,15 @@ export default function ShipmentDashboard() {
     const storedTheme = window.localStorage.getItem("gbp-dark-mode") === "true";
     setDark(storedTheme);
     document.body.classList.toggle("darkMode", storedTheme);
-    hydrateOrders().then(setOrders);
-    const refresh = () => setOrders(loadOrders());
-    window.addEventListener(ORDERS_UPDATED_EVENT, refresh);
-    window.addEventListener("storage", refresh);
-    return () => { window.removeEventListener(ORDERS_UPDATED_EVENT, refresh); window.removeEventListener("storage", refresh); };
+    return () => undefined;
   }, []);
+
+  useEffect(() => {
+    const value = query.trim();
+    if (!value) { setOrders([]); return; }
+    const criteria = value.includes("@") ? { email: value } : { id: value };
+    hydrateOrders(criteria).then(setOrders);
+  }, [query]);
 
   const toggleTheme = () => {
     const next = !dark;
