@@ -1,7 +1,7 @@
  "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, ShoppingBag, Heart, Menu, X, Minus, Plus, ArrowRight } from "lucide-react";
+import { Search, ShoppingBag, Heart, Menu, X, Minus, Plus, ArrowRight, Moon, Sun } from "lucide-react";
 import { products, Product } from "../data/products";
 import { loadProducts, PRODUCTS_UPDATED_EVENT } from "../data/productStore";
 import { addOrder, hydrateOrders, OrderItem } from "../data/orderStore";
@@ -18,10 +18,30 @@ export default function HomePage() {
   const [checkout, setCheckout] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("gbp-cart");
     if (raw) setCart(JSON.parse(raw));
+    setDarkMode(localStorage.getItem("gbp-theme") === "dark");
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("darkMode", darkMode);
+    localStorage.setItem("gbp-theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
+  useEffect(() => {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+    return () => revealObserver.disconnect();
   }, []);
 
   useEffect(() => {
@@ -100,13 +120,14 @@ export default function HomePage() {
     <>
       <header className="siteHeader">
         <div className="container nav">
-          <a href="#" className="logo"><span className="logoMark">GBP</span><span>GBP HOME ART & DECORS</span></a>
+          <a href="#" className="logo"><img src="/gbp-logo.png" alt="GBP Home Art & Decors"/><span>GBP HOME ART & DECORS</span></a>
           <nav className="navLinks">
             <a href="#home">Home</a><a href="#collections">Collections</a><a href="#shop">Shop</a><a href="#about">About</a><a href="#delivery">Delivery</a><a href="/shipment">Track order</a>
           </nav>
           <div className="navActions">
             <button className="iconBtn" onClick={() => document.getElementById("search")?.focus()} aria-label="Search"><Search size={17}/></button>
             <button className="iconBtn" aria-label="Wishlist"><Heart size={17}/></button>
+            <button className="iconBtn" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? "Switch to light mode" : "Switch to night mode"}>{darkMode ? <Sun size={17}/> : <Moon size={17}/>}</button>
             <button className="iconBtn" onClick={() => setCartOpen(true)} aria-label="Shopping bag"><ShoppingBag size={17}/>{cart.length > 0 && <span className="badge">{cart.length}</span>}</button>
             <button className="iconBtn menuBtn" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">{menuOpen ? <X size={18}/> : <Menu size={18}/>}</button>
           </div>
@@ -115,7 +136,7 @@ export default function HomePage() {
       </header>
 
       <main>
-        <section className="hero" id="home">
+        <section className="hero reveal" id="home">
           <div className="container heroInner">
             <div className="kicker">GBP Home Art & Decors</div>
             <h1 className="serif">Elevate Your Space.<br/>Define Your Style.</h1>
@@ -124,23 +145,23 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="section" id="collections">
+        <section className="section reveal" id="collections">
           <div className="container">
             <div className="sectionHead"><div><div className="kicker">Curated for your space</div><h2 className="serif">Collections</h2></div><p>From sculptural statements to subtle accents, discover pieces selected to create beautiful moments at home.</p></div>
             <div className="collections">
-              <div className="collection" style={{backgroundImage:"url(https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">01</div><h3>The Statement Collection</h3><p>Bold pieces for spaces that deserve attention.</p></div>
-              <div className="collection" style={{backgroundImage:"url(https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">02</div><h3>The Golden Collection</h3><p>Refined accents inspired by timeless luxury.</p></div>
-              <div className="collection" style={{backgroundImage:"url(https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">03</div><h3>The Modern Minimalist</h3><p>Clean forms. Quiet elegance.</p></div>
+              <div className="collection reveal reveal-delay-1" style={{backgroundImage:"url(https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">01</div><h3>The Statement Collection</h3><p>Bold pieces for spaces that deserve attention.</p></div>
+              <div className="collection reveal reveal-delay-2" style={{backgroundImage:"url(https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">02</div><h3>The Golden Collection</h3><p>Refined accents inspired by timeless luxury.</p></div>
+              <div className="collection reveal reveal-delay-3" style={{backgroundImage:"url(https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85)"}}><div className="kicker">03</div><h3>The Modern Minimalist</h3><p>Clean forms. Quiet elegance.</p></div>
             </div>
           </div>
         </section>
 
-        <section className="section" id="shop" style={{background:"var(--cream)"}}>
+        <section className="section reveal" id="shop" style={{background:"var(--cream)"}}>
           <div className="container">
             <div className="sectionHead" id="featured"><div><div className="kicker">Shop GBP</div><h2 className="serif">Featured Pieces</h2></div><div style={{display:"flex",gap:8}}><input id="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search products..." style={{padding:"11px 13px",border:"1px solid var(--line)",background:"white",minWidth:210}} /></div></div>
             <div className="filters">{categories.map(c=><button key={c} className={`filter ${category===c?"active":""}`} onClick={()=>setCategory(c)}>{c}</button>)}</div>
             <div className="productGrid">
-              {filtered.map(p => <article className="product" key={p.id}>
+              {filtered.map((p, index) => <article className={`product reveal reveal-delay-${(index % 3) + 1}`} key={p.id}>
                 <div className="productImg"><img src={p.image} alt={p.name}/></div>
                 <div className="productInfo"><div className="productCat">{p.category}</div><div className="productName">{p.name}</div><div className="price">₱{p.price.toLocaleString()}</div><div className={`catalogStock ${p.stock === 0 ? "empty" : p.stock <= 5 ? "low" : "available"}`}>{p.stock === 0 ? "Out of stock" : `${p.stock} in stock`}</div><div className="productActions"><button className="btn btnDark" onClick={()=>addToCart(p)} disabled={p.stock === 0}>{p.stock === 0 ? "Out of Stock" : "Add to Cart"}</button><button className="btn btnOutline" onClick={()=>setSelected(p)}>Details</button></div></div>
               </article>)}
@@ -148,11 +169,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="section editorial" id="about">
+        <section className="section editorial reveal" id="about">
           <div className="container editorialGrid"><div><div className="kicker">The GBP philosophy</div><h2>Objects With Character.<br/>Spaces With Meaning.</h2><p>GBP Home Art & Decors brings together decorative pieces designed to add warmth, personality, and a sophisticated finishing touch to modern interiors. Every item is presented as part of the space—not simply as a product.</p><a href="#contact" className="btn btnGold">Discover GBP</a></div><div className="editorialImg"/></div>
         </section>
 
-        <section className="section">
+        <section className="section reveal">
           <div className="container">
             <div className="sectionHead"><div><div className="kicker">Why GBP</div><h2 className="serif">Designed to feel special.</h2></div></div>
             <div className="whyGrid">
@@ -164,14 +185,14 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="section" id="delivery" style={{background:"var(--cream)"}}>
+        <section className="section reveal" id="delivery" style={{background:"var(--cream)"}}>
           <div className="container">
             <div className="sectionHead"><div><div className="kicker">Delivery</div><h2 className="serif">Beautiful pieces, delivered.</h2></div><p>Offer same-day and standard shipping based on product size, location, availability, and courier service.</p></div>
             <div className="whyGrid"><div className="why"><strong>Same-Day</strong><span className="muted">Lalamove, Grab, JoyRide, subject to location and availability.</span></div><div className="why"><strong>Nationwide</strong><span className="muted">J&T Express, LBC, and other preferred courier options.</span></div><div className="why"><strong>Careful Fulfillment</strong><span className="muted">Orders are reviewed and prepared before shipment.</span></div><div className="why"><strong>Order Updates</strong><span className="muted">Track the order journey from received to delivered.</span></div></div>
           </div>
         </section>
 
-        <section className="section">
+        <section className="section reveal">
           <div className="container">
             <div className="sectionHead"><div><div className="kicker">Customer notes</div><h2 className="serif">Loved in real spaces.</h2></div></div>
             <div className="testimonials"><div className="quote"><p>“Beautiful piece. It completely transformed our living room and feels even better in person.”</p><strong>— GBP Customer</strong></div><div className="quote"><p>“Elegant, carefully packed, and exactly what we wanted for our home.”</p><strong>— GBP Customer</strong></div><div className="quote"><p>“The inquiry process made it easy to ask about the item before ordering.”</p><strong>— GBP Customer</strong></div></div>
@@ -182,7 +203,7 @@ export default function HomePage() {
       <footer className="footer" id="contact">
         <div className="container">
           <div className="footerGrid">
-            <div><div className="logo" style={{color:"white"}}><span className="logoMark">GBP</span><span>GBP HOME ART & DECORS</span></div><p>Luxury • Elegant • Premium</p></div>
+            <div><div className="logo" style={{color:"white"}}><img src="/gbp-logo.png" alt="GBP Home Art & Decors"/><span>GBP HOME ART & DECORS</span></div><p>Luxury • Elegant • Premium</p></div>
             <div><h4>Explore</h4><a href="#home">Home</a><br/><a href="#collections">Collections</a><br/><a href="#shop">Shop</a><br/><a href="#about">About</a></div>
             <div><h4>Support</h4><a href="#delivery">Delivery</a><br/><a href="#contact">Contact</a><br/><a href="/shipment">Track Shipment</a><br/><a href="/admin">Admin Dashboard</a><br/><a href="/admin/inventory">Inventory Studio</a></div>
             <div><h4>Inquiries</h4><p>For product availability, dimensions, delivery, or special requests, use the “Inquire About This Item” action on a product.</p></div>
