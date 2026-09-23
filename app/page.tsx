@@ -1,5 +1,5 @@
-import HomePage from "../components/HomePage";
+import GbpInventorySystem from "../components/GbpInventorySystem";
 
 export default function Page() {
-  return <HomePage />;
+  return <GbpInventorySystem />;
 }
