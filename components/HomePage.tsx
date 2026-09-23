@@ -138,10 +138,19 @@ export default function HomePage() {
       <main>
         <section className="hero reveal" id="home">
           <div className="container heroInner">
+            <div className="heroMeta">
+              <span className="fashionBadge">Curated interiors</span>
+              <span className="miniNote">New season edit</span>
+            </div>
             <div className="kicker">GBP Home Art & Decors</div>
             <h1 className="serif">Elevate Your Space.<br/>Define Your Style.</h1>
             <p>Discover thoughtfully curated home décor pieces designed to bring warmth, character, and timeless elegance into every space.</p>
             <div className="actions"><a href="#shop" className="btn btnGold">Explore Collections</a><a href="#featured" className="btn btnLight">Shop Featured Pieces</a></div>
+            <div className="heroStats">
+              <div><strong>1.2k+</strong><span>Curated pieces</span></div>
+              <div><strong>4.9/5</strong><span>Client love</span></div>
+              <div><strong>48h</strong><span>Fast dispatch</span></div>
+            </div>
           </div>
         </section>
 
