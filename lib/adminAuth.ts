@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 
 export const ADMIN_COOKIE = "gbp-admin-session";
 const SESSION_TTL_SECONDS = 60 * 60 * 8;
+const REMEMBERED_SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 
 function secret() {
   return process.env.ADMIN_SESSION_SECRET || "replace-this-admin-session-secret";
@@ -15,8 +16,9 @@ function sign(value: string) {
   return createHmac("sha256", secret()).update(value).digest("base64url");
 }
 
-export function createAdminSession(username: string) {
-  const payload = `${username}|${Date.now() + SESSION_TTL_SECONDS * 1000}`;
+export function createAdminSession(username: string, rememberMe = false) {
+  const ttlSeconds = rememberMe ? REMEMBERED_SESSION_TTL_SECONDS : SESSION_TTL_SECONDS;
+  const payload = `${username}|${Date.now() + ttlSeconds * 1000}`;
   return `${encode(payload)}.${sign(payload)}`;
 }
 

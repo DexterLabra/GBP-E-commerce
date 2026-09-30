@@ -19,6 +19,24 @@ create index if not exists orders_status_idx on public.orders (status);
 
 alter table public.orders enable row level security;
 
+create table if not exists public.operations_state (
+  key text primary key check (key = 'gbp'),
+  version bigint not null default 0 check (version >= 0),
+  state jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.operations_state enable row level security;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.operations_state;
+exception
+  when duplicate_object then null;
+  when undefined_object then null;
+end
+$$;
+
 -- The Next.js API uses SUPABASE_SERVICE_ROLE_KEY on the server. Do not expose
 -- that key in browser code. Add authenticated customer/admin policies later
 -- when user accounts are enabled.
