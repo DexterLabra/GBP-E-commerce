@@ -262,134 +262,54 @@ const writeLocalStorage = (key: string, value: unknown) => {
   }
 };
 
-const initialInventory: InventoryItem[] = [
-  {
-    id: "INV-01",
-    sku: "WOOD-FURN-004-CHAR-BLACK-00017",
-    productName: "Classic Coffee Table",
-    category: "Furniture",
-    material: "Wood",
-    designNo: "FURN-004",
-    colorVariant: "Charcoal",
-    designVariant: "Black",
-    itemNumber: "00017",
-    barcode: "WOOD-FURN-004-CHAR-BLACK-00017",
-    onHand: 18,
-    reserved: 4,
-    dispatched: 7,
-    returned: 1,
-    damaged: 0,
-    lowStockThreshold: 10,
-    price: 4999,
-    lastUpdated: "2026-09-21T09:20:00",
-    status: "Healthy",
-  },
-  {
-    id: "INV-02",
-    sku: "GLASS-LAMP-011-GOLD-STD-00022",
-    productName: "Golden Luxe Table Lamp",
-    category: "Lighting",
-    material: "Glass",
-    designNo: "LAMP-011",
-    colorVariant: "Gold",
-    designVariant: "Standard",
-    itemNumber: "00022",
-    barcode: "GLASS-LAMP-011-GOLD-STD-00022",
-    onHand: 9,
-    reserved: 2,
-    dispatched: 5,
-    returned: 0,
-    damaged: 1,
-    lowStockThreshold: 8,
-    price: 2899,
-    lastUpdated: "2026-09-21T11:55:00",
-    status: "Low Stock",
-  },
-  {
-    id: "INV-03",
-    sku: "METAL-FIG-007-SILVER-ALT-00003",
-    productName: "Silver Frame Wall Art",
-    category: "Wall Decor",
-    material: "Metal",
-    designNo: "FIG-007",
-    colorVariant: "Silver",
-    designVariant: "Alternate",
-    itemNumber: "00003",
-    barcode: "METAL-FIG-007-SILVER-ALT-00003",
-    onHand: 5,
-    reserved: 2,
-    dispatched: 3,
-    returned: 1,
-    damaged: 1,
-    lowStockThreshold: 6,
-    price: 2199,
-    lastUpdated: "2026-09-22T08:15:00",
-    status: "Low Stock",
-  },
-  {
-    id: "INV-04",
-    sku: "CERAMIC-ORN-015-WHITE-STD-00048",
-    productName: "White Ceramic Vase",
-    category: "Home Decor",
-    material: "Ceramic",
-    designNo: "ORN-015",
-    colorVariant: "White",
-    designVariant: "Standard",
-    itemNumber: "00048",
-    barcode: "CERAMIC-ORN-015-WHITE-STD-00048",
-    onHand: 24,
-    reserved: 8,
-    dispatched: 11,
-    returned: 2,
-    damaged: 0,
-    lowStockThreshold: 12,
-    price: 1499,
-    lastUpdated: "2026-09-22T07:14:00",
-    status: "Healthy",
-  },
-  {
-    id: "INV-05",
-    sku: "TEXTILE-CUSH-019-BLUE-NOVA-00009",
-    productName: "Velvet Accent Cushion",
-    category: "Textiles",
-    material: "Textile",
-    designNo: "CUSH-019",
-    colorVariant: "Blue",
-    designVariant: "Nova",
-    itemNumber: "00009",
-    barcode: "TEXTILE-CUSH-019-BLUE-NOVA-00009",
-    onHand: 20,
-    reserved: 5,
-    dispatched: 9,
-    returned: 0,
-    damaged: 1,
-    lowStockThreshold: 10,
-    price: 799,
-    lastUpdated: "2026-09-21T10:42:00",
-    status: "Healthy",
-  },
-  {
-    id: "INV-06",
-    sku: "WOOD-RACK-021-MAHOGANY-CLASSIC-00005",
-    productName: "Mahogany Shelf Rack",
-    category: "Storage",
-    material: "Wood",
-    designNo: "RACK-021",
-    colorVariant: "Mahogany",
-    designVariant: "Classic",
-    itemNumber: "00005",
-    barcode: "WOOD-RACK-021-MAHOGANY-CLASSIC-00005",
-    onHand: 4,
-    reserved: 1,
-    dispatched: 2,
-    returned: 0,
-    damaged: 0,
-    lowStockThreshold: 5,
-    price: 3999,
-    lastUpdated: "2026-09-22T12:05:00",
-    status: "Critical",
-  },
+const OFFICIAL_INVENTORY_VERSION = 1;
+const OFFICIAL_INVENTORY_VERSION_KEY = "gbp-official-inventory-version";
+const officialCatalogRows = [
+  { sku: "RHL - 001", productName: "Nordic Minimalist Romantic Couple Sculpture with Moon Night Lamp", category: "Lamps", price: 1499 },
+  { sku: "CAF - 001", productName: "Elegant Golden Arowana Ceramic Decor", category: "Figurines", price: 1999 },
+  { sku: "RHF - 001", productName: "Minimalist Reading Yoga Girl in White and Gold", category: "Figurines", price: 1299 },
+  { sku: "RHL - 003", productName: "Nordic Minimalist Kneeling Human Sculpture with Night Lamp", category: "Lamps", price: 1999 },
+  { sku: "MCH - 001", productName: "Elegant Metal Candle Holder in Gold", category: "Candle Holders", price: 799 },
+  { sku: "RHL - 002", productName: "Nordic Minimalist Thinking Human Sculpture with Moon Night Lamp", category: "Lamps", price: 2499 },
+  { sku: "RAF - 001", productName: "Cute Polar Bear with Trinket and Welcome Tray", category: "Figurines", price: 1499 },
+  { sku: "RAL - 001", productName: "Modern Leopard Decor Sculpture with Night Lamp", category: "Lamps", price: 3499 },
+  { sku: "RAL - 001-Gold/Black", productName: "Modern Leopard Decor Sculpture with Night Lamp", category: "Lamps", price: 3499 },
+  { sku: "RAB - 001", productName: "Modern Owl Decorative Bookend in White and Gold", category: "Bookends", price: 1499 },
+  { sku: "RHF - 002", productName: "Minimalist Sitting Yoga Girl in White and Gold", category: "Figurines", price: 1299 },
+  { sku: "RHF - 003", productName: "Abstract Praying Head Sculpture in Gold and Black", category: "Figurines", price: 2499 },
+  { sku: "RHF - 003-A", productName: "Abstract Praying Head Sculpture in Gold and Black", category: "Figurines", price: 1299 },
+  { sku: "RHF - 003-B", productName: "Abstract Praying Head Sculpture in Gold and Black", category: "Figurines", price: 1299 },
+  { sku: "RHF - 003-C", productName: "Abstract Praying Head Sculpture in Gold and Black", category: "Figurines", price: 1099 },
+  { sku: "RHF - 004", productName: "Elegant Lady Justice Goddess of Law Decor Sculpture", category: "Figurines", price: 1299 },
 ];
+
+const initialInventory: InventoryItem[] = officialCatalogRows.map((product, index) => {
+  const skuParts = product.sku.split("-").map((part) => part.trim());
+  return {
+    id: `GBP-${String(index + 1).padStart(3, "0")}`,
+    sku: product.sku,
+    productName: product.productName,
+    category: product.category,
+    material: skuParts[0] || "DECOR",
+    designNo: skuParts[1] || product.sku,
+    colorVariant: skuParts[2] || "Standard",
+    designVariant: skuParts[3] || "Standard",
+    itemNumber: skuParts[skuParts.length - 1] || String(index + 1).padStart(3, "0"),
+    barcode: product.sku,
+    onHand: 0,
+    reserved: 0,
+    dispatched: 0,
+    returned: 0,
+    damaged: 0,
+    lowStockThreshold: 0,
+    price: product.price,
+    dimensions: "",
+    weightKg: 0,
+    imageUrl: "",
+    lastUpdated: "2026-09-30T00:00:00.000Z",
+    status: "Critical",
+  };
+});
 
 const initialOrders: OrderRecord[] = [
   {
@@ -590,7 +510,10 @@ export default function GbpInventorySystem() {
   });
   const [notifications, setNotifications] = useState<NotificationItem[]>(() => cachedOperations ? cachedOperations.notifications as NotificationItem[] : readLocalStorage("gbp-notifications", initialNotifications));
   const [orders, setOrders] = useState<OrderRecord[]>(() => cachedOperations ? cachedOperations.orders as OrderRecord[] : readLocalStorage("gbp-orders", initialOrders));
-  const [inventory, setInventory] = useState<InventoryItem[]>(() => cachedOperations ? cachedOperations.inventory as InventoryItem[] : readLocalStorage("gbp-inventory", initialInventory));
+  const [inventory, setInventory] = useState<InventoryItem[]>(() => {
+    if (readLocalStorage<number>(OFFICIAL_INVENTORY_VERSION_KEY, 0) < OFFICIAL_INVENTORY_VERSION) return initialInventory;
+    return cachedOperations ? cachedOperations.inventory as InventoryItem[] : readLocalStorage("gbp-inventory", initialInventory);
+  });
   const [dispatches, setDispatches] = useState<DispatchRecord[]>(() => cachedOperations ? cachedOperations.dispatches as DispatchRecord[] : readLocalStorage("gbp-dispatches", initialDispatches));
   const [scanHistory, setScanHistory] = useState<ScanTransaction[]>(() => cachedOperations ? cachedOperations.scanHistory as ScanTransaction[] : readLocalStorage("gbp-scan-history", initialScanHistory));
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => cachedOperations ? cachedOperations.auditLogs as AuditLog[] : readLocalStorage("gbp-audit-logs", initialAudit));
@@ -601,6 +524,7 @@ export default function GbpInventorySystem() {
   const operationsVersion = useRef(readLocalStorage(OPERATIONS_VERSION_KEY, 0));
   const applyingRemoteSnapshot = useRef(false);
   const databaseAvailable = useRef(false);
+  const catalogMigrationPending = useRef(readLocalStorage<number>(OFFICIAL_INVENTORY_VERSION_KEY, 0) < OFFICIAL_INVENTORY_VERSION);
   const [activeRole, setActiveRole] = useState<UserRole>("Administrator");
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().slice(0, 10));
   const [datePreset, setDatePreset] = useState<"Today" | "This Week" | "This Month" | "Custom Range">("This Month");
@@ -705,7 +629,7 @@ export default function GbpInventorySystem() {
     };
   }, []);
 
-  const operationsSnapshot: OperationsSnapshot = { orders, inventory, dispatches, scanHistory, auditLogs, recoveryHistory, notifications, users: roleUsers };
+  const operationsSnapshot: OperationsSnapshot = { orders, inventory, dispatches, scanHistory, auditLogs, recoveryHistory, notifications, users: roleUsers, inventoryCatalogVersion: OFFICIAL_INVENTORY_VERSION };
 
   useEffect(() => {
     writeLocalStorage(OPERATIONS_STORAGE_KEY, operationsSnapshot);

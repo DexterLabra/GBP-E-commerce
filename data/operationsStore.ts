@@ -11,6 +11,7 @@ export type OperationsSnapshot = {
   recoveryHistory?: unknown[];
   notifications: unknown[];
   users: unknown[];
+  inventoryCatalogVersion?: number;
 };
 
 export function isOperationsSnapshot(value: unknown): value is OperationsSnapshot {

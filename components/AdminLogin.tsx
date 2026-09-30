@@ -1,7 +1,10 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowRight, Check, Eye, EyeOff, KeyRound, LockKeyhole, ShieldCheck, Sparkles, SunMedium } from "lucide-react";
+import dynamic from "next/dynamic";
+import { ArrowRight, Check, Eye, EyeOff, KeyRound, LockKeyhole, ShieldCheck } from "lucide-react";
+
+const GbpLoginScene = dynamic(() => import("./GbpLoginScene"), { ssr: false });
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -76,17 +79,8 @@ export default function AdminLogin() {
       )}
 
       <section className={`auth-login ${introComplete ? "is-visible" : ""}`} aria-hidden={!introComplete}>
-        <aside className="auth-visual" aria-label="Warm, refined home interior">
-          <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1800&q=85" alt="Warm modern living room with considered home decor" />
-          <div className="auth-visual-shade" />
-          <div className="auth-visual-top"><span>EST. WITH CARE</span><span>PHILIPPINES</span></div>
-          <div className="auth-visual-copy">
-            <span className="auth-overline"><SunMedium size={15} /> ELEGANCE IN EVERY SPACE</span>
-            <p className="auth-quote">Thoughtful details.<br /><em>Beautifully at home.</em></p>
-            <span className="auth-visual-rule" />
-            <span className="auth-visual-caption">GBP HOME ART &amp; DECORS · PRIVATE OPERATIONS</span>
-          </div>
-        </aside>
+        <GbpLoginScene />
+        <div className="auth-corner-mark" aria-hidden="true"><span>GBP</span><i /> PRIVATE OPERATIONS</div>
 
         <section className="auth-form-side">
           <div className="auth-form-wrap">
@@ -132,7 +126,10 @@ export default function AdminLogin() {
             </form>
 
             <div className="auth-security"><LockKeyhole size={15} /><span>Protected admin access</span><span className="security-divider" /><KeyRound size={14} /><span>Encrypted session</span></div>
-            <p className="auth-footer">© {new Date().getFullYear()} GBP Home Art &amp; Decors</p>
+            <div className="auth-footer">
+              <p>New to the portal? <a href="mailto:gbphomedecors@mail.com?subject=Request%20operations%20access">Request access</a></p>
+              <span>© {new Date().getFullYear()} GBP Home Art &amp; Decors</span>
+            </div>
           </div>
         </section>
       </section>
